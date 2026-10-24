@@ -1,130 +1,55 @@
-# Практическое занятие №1. Основы работы в командной строке Linux
+# Эмулятор оболочки - вариант 1, этапы 1–3
 
-## Задача 1
+Графическая оболочка на Python 3 (Tkinter), без сторонних библиотек
+Ввод команд выполняется прямо после приглашения `minimal:/$` в одном окне
 
-```bash
-sort /etc/passwd | grep -o '^[^:]*'
+## Требования
+
+- **Этап 1:** окно с именем VFS, аргументы в кавычках, заглушки `ls` и `cd`, команда `exit`, сообщения об ошибках.
+- **Этап 2:** параметры `--vfs` и `--script`, вывод параметров, остановка стартового скрипта при первой ошибке.
+- **Этап 3:** JSON-VFS в памяти, Base64 для двоичных данных, примеры минимальной VFS, с файлами и тремя уровнями каталогов.
+
+`ls` и `cd` только выводят имя и аргументы т.к. реальный функционал уже в этапе 4
+
+## Запуск на Windows
+
+Нужен Python 3 с Tkinter. Открыть PowerShell в папке проекта и выполнить:
+
+```powershell
+py run.py
 ```
 
-## Задача 2
+Пример команд в окне: `ls`, `cd "my folder"`, `unknown`, `exit`
 
-```bash
-awk '{print $2, $1}' /etc/protocols | tail -5 | sort -r
+С конкретной VFS и стартовым скриптом:
+
+```powershell
+py run.py --vfs examples/deep.json --script examples/startup_error.txt
 ```
 
-## Задача 3
+При ошибке скрипт останавливается, а окно остаётся открытым. Для выхода ввести `exit`
 
-```bash
-#!/usr/bin/env bash
+## Автоматические проверки
 
-text=$1
-printf -v border '%*s' "$((${#text} + 2))" ''
-border=${border// /-}
-printf '+%s+\n| %s |\n+%s+\n' "$border" "$text" "$border"
+```powershell
+py tests.py
 ```
 
-```bash
-chmod +x banner
+Тесты печатают команды, ответы и `PASS`/`FAIL`. Дополнительно запускают три отдельных Python-сценария через настоящий GUI:
+
+```powershell
+py tests/check_minimal.py
+py tests/check_files.py
+py tests/check_deep.py
 ```
 
-```bash
-shellcheck banner
-```
+Для этих трёх GUI-сценариев требуется графический дисплей; на обычной Windows он есть.
 
-## Задача 4
+## Структура
 
-```bash
-#!/usr/bin/env bash
-
-grep -oE '[A-Za-z_][A-Za-z0-9_]*' "$1" | sort -u | paste -sd ' ' -
-```
-
-```bash
-chmod +x identifiers
-```
-
-## Задача 5
-
-```bash
-#!/usr/bin/env bash
-
-chmod 755 "$1"
-sudo cp "$1" /usr/local/bin/
-```
-
-```bash
-chmod +x reg
-```
-
-## Задача 6
-
-```bash
-#!/usr/bin/env bash
-directory=${1:-.}
-
-for file in "$directory"/*.{c,js,py}; do
-    [ -f "$file" ] || continue
-    case $file in
-        *.py) regex='^[[:space:]]*#' ;;
-        *)    regex='^[[:space:]]*(//|/\*)' ;;
-    esac
-
-    if head -n 1 "$file" | grep -Eq "$regex"; then
-        echo "$(basename "$file"): comment found"
-    else
-        echo "$(basename "$file"): no comment"
-    fi
-done
-```
-
-```bash
-chmod +x check_comments
-```
-
-## Задача 7
-
-```bash
-#!/usr/bin/env bash
-
-find "$1" -type f -exec sha256sum {} + | sort | uniq -w 64 -D | cut -d' ' -f3-
-```
-
-```bash
-chmod +x duplicates
-```
-
-## Задача 8
-
-```bash
-#!/usr/bin/env bash
-
-tar -cf "archive_$2.tar" -- "$1"/*."$2"
-```
-
-```bash
-chmod +x archive_ext
-```
-
-## Задача 9
-
-```bash
-#!/usr/bin/env bash
-
-sed 's/    /\t/g' "$1" > "$2"
-```
-
-```bash
-chmod +x spaces_to_tabs
-```
-
-## Задача 10
-
-```bash
-#!/usr/bin/env bash
-
-find "$1" -maxdepth 1 -type f -name '*.txt' -empty -printf '%f\n'
-```
-
-```bash
-chmod +x empty_text
-```
+- `run.py` - окно и ввод команд.
+- `src/shell.py` - разбор команд и стартовых скриптов.
+- `src/vfs.py` - загрузка JSON в память.
+- `examples/` - VFS и файлы команд.
+- `tests.py`, `tests/` - автоматические проверки.
+- `Makefile` - дополнительный запуск в средах с `make` (в Windows не нужен).

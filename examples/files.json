@@ -1,0 +1,9 @@
+{
+  "name": "files",
+  "entries": [
+    {"path": "/readme.txt", "type": "file", "content": "Hello!\n"},
+    {"path": "/picture.bin", "type": "file", "base64": "AAECA//+"},
+    {"path": "/docs", "type": "dir"},
+    {"path": "/docs/info.txt", "type": "file", "content": "Documentation\n"}
+  ]
+}

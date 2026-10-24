@@ -1,0 +1,8 @@
+{
+  "name": "deep",
+  "entries": [
+    {"path": "/one/two/three/task.txt", "type": "file", "content": "Three levels\n"},
+    {"path": "/one/empty", "type": "dir"},
+    {"path": "/root.txt", "type": "file", "content": "Root\n"}
+  ]
+}

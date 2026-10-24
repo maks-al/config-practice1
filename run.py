@@ -21,7 +21,7 @@ class App:
         self.ready = False
         self.shell = Shell(vfs, self.write)
 
-        window.title(f"Эмулятор — {vfs.name}")
+        window.title(f"{vfs.name}")
         window.geometry("900x550")
         window.minsize(540, 300)
 

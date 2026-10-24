@@ -1,0 +1,4 @@
+# Все команды выполняются до exit
+ls
+ls "two words.txt"
+cd "my folder"

@@ -1,0 +1,4 @@
+# Ошибка останавливает только стартовый скрипт
+ls "two words.txt"
+wrong-command
+cd THIS_MUST_NOT_RUN
